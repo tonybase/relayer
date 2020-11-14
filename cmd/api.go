@@ -52,7 +52,7 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	}
 	rootCmd.SetArgs(args)
 	if err = rootCmd.ExecuteContext(r.Context()); err != nil {
-		handleWrite(w, r, errorReply{Code: http.StatusInternalServerError, Message: fmt.Sprintf("error:%v", err)})
+		handleWrite(w, r, errorReply{Code: http.StatusInternalServerError, Message: err.Error()})
 	} else {
 		handleWrite(w, r, errorReply{Code: http.StatusOK, Message: "OK"})
 	}
