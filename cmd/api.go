@@ -17,8 +17,8 @@ func getAPICmd() *cobra.Command {
 		Short: "Start the relayer API",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			http.HandleFunc("/", handleExec)
-			log.Println("listening on", config.Global.APIListenPort)
-			return http.ListenAndServe(config.Global.APIListenPort, nil)
+			log.Println("listening on", config.Global.APIListenAddr)
+			return http.ListenAndServe(config.Global.APIListenAddr, nil)
 		},
 	}
 	return apiCmd
