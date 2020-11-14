@@ -568,6 +568,8 @@ func (nrs *NaiveStrategy) RelayPackets(src, dst *Chain, sp *RelaySequences, sh *
 			src.logPacketsRelayed(dst, len(msgs.Src)-1)
 		}
 	}
+	src.RelayResult = msgs
+	dst.RelayResult = msgs
 
 	return nil
 }
