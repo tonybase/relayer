@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -29,12 +30,14 @@ var cmdPermits = []string{"tx"}
 type errorReply struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
+	Output  string `json:"output"`
 }
 
 func handleExec(w http.ResponseWriter, r *http.Request) {
 	var (
 		err       error
 		hasPermit bool
+		outWriter = new(bytes.Buffer)
 		args      = strings.Split(strings.TrimLeft(r.URL.Path, "/"), "/")
 	)
 	if len(args) <= 1 {
@@ -51,10 +54,16 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rootCmd.SetArgs(args)
+	rootCmd.SetOutput(outWriter)
 	if err = rootCmd.ExecuteContext(r.Context()); err != nil {
 		handleWrite(w, r, errorReply{Code: http.StatusInternalServerError, Message: err.Error()})
 	} else {
-		handleWrite(w, r, errorReply{Code: http.StatusOK, Message: "OK"})
+		output := outWriter.String()
+		if strings.HasPrefix(output, "Commands") {
+			handleWrite(w, r, errorReply{Code: http.StatusBadRequest, Message: fmt.Sprintf("invalid args:%s", args), Output: output})
+		} else {
+			handleWrite(w, r, errorReply{Code: http.StatusOK, Message: "OK", Output: output})
+		}
 	}
 }
 
