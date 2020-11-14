@@ -28,9 +28,9 @@ func getAPICmd() *cobra.Command {
 var cmdPermits = []string{"tx"}
 
 type errorReply struct {
-	Code    int    `json:"code"`
-	Message string `json:"message"`
-	Output  string `json:"output"`
+	Code    int             `json:"code"`
+	Message string          `json:"message"`
+	Data    json.RawMessage `json:"data"`
 }
 
 func handleExec(w http.ResponseWriter, r *http.Request) {
@@ -60,9 +60,9 @@ func handleExec(w http.ResponseWriter, r *http.Request) {
 	} else {
 		output := outWriter.String()
 		if strings.HasPrefix(output, "Commands") {
-			handleWrite(w, r, errorReply{Code: http.StatusBadRequest, Message: fmt.Sprintf("invalid args:%s", args), Output: output})
+			handleWrite(w, r, errorReply{Code: http.StatusBadRequest, Message: fmt.Sprintf("invalid args:%s", args)})
 		} else {
-			handleWrite(w, r, errorReply{Code: http.StatusOK, Message: "OK", Output: output})
+			handleWrite(w, r, errorReply{Code: http.StatusOK, Message: "OK", Data: outWriter.Bytes()})
 		}
 	}
 }
