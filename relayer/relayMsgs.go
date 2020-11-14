@@ -190,6 +190,7 @@ func send(chain *Chain, msgs []sdk.Msg) bool {
 		chain.LogFailedTx(res, err, msgs)
 		return false
 	}
+	chain.Result = res
 	// NOTE: Add more data to this such as identifiers
 	chain.LogSuccessTx(res, msgs)
 

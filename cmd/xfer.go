@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -72,6 +73,17 @@ func xfersend() *cobra.Command {
 				return err
 			}
 			done()
+
+			defer func() {
+				res := map[string]interface{}{
+					"src":    src,
+					"dst":    dst,
+					"chain":  c[dst],
+					"amount": amount,
+				}
+				b, _ := json.Marshal(res)
+				cmd.OutOrStdout().Write(b)
+			}()
 
 			switch {
 			case toHeightOffset > 0 && toTimeOffset > 0:

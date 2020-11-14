@@ -62,6 +62,8 @@ type Chain struct {
 
 	// stores facuet addresses that have been used reciently
 	faucetAddrs map[string]time.Time
+
+	Result *sdk.TxResponse `yaml:"-" json:"result"`
 }
 
 // ValidatePaths takes two chains and validates their paths
