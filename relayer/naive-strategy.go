@@ -534,6 +534,15 @@ func (nrs *NaiveStrategy) RelayPackets(src, dst *Chain, sp *RelaySequences, sh *
 		}
 	}
 
+	src.RelayResult = map[string]interface{}{
+		"path-end": src.PathEnd,
+		"relay":    0,
+	}
+	dst.RelayResult = map[string]interface{}{
+		"path-end": dst.PathEnd,
+		"relay":    0,
+	}
+
 	if !msgs.Ready() {
 		src.Log(fmt.Sprintf("- No packets to relay between [%s]port{%s} and [%s]port{%s}",
 			src.ChainID, src.PathEnd.PortID, dst.ChainID, dst.PathEnd.PortID))
@@ -562,14 +571,14 @@ func (nrs *NaiveStrategy) RelayPackets(src, dst *Chain, sp *RelaySequences, sh *
 	// send messages to their respective chains
 	if msgs.Send(src, dst); msgs.Success() {
 		if len(msgs.Dst) > 1 {
+			dst.RelayResult["relay"] = len(msgs.Dst) - 1
 			dst.logPacketsRelayed(src, len(msgs.Dst)-1)
 		}
 		if len(msgs.Src) > 1 {
+			src.RelayResult["relay"] = len(msgs.Src) - 1
 			src.logPacketsRelayed(dst, len(msgs.Src)-1)
 		}
 	}
-	src.RelayResult = msgs
-	dst.RelayResult = msgs
 
 	return nil
 }

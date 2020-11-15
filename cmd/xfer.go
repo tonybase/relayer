@@ -76,10 +76,9 @@ func xfersend() *cobra.Command {
 
 			defer func() {
 				res := map[string]interface{}{
-					"src":    src,
-					"dst":    dst,
-					"chain":  c[dst],
 					"amount": amount,
+					"src":    c[src],
+					"dst":    c[dst],
 				}
 				b, _ := json.Marshal(res)
 				cmd.OutOrStdout().Write(b)

@@ -63,8 +63,8 @@ type Chain struct {
 	// stores facuet addresses that have been used reciently
 	faucetAddrs map[string]time.Time
 
-	TxResult    *sdk.TxResponse `yaml:"-" json:"tx-result"`
-	RelayResult *RelayMsgs      `yaml:"-" json:"relay-result"`
+	TxResult    []*sdk.TxResponse      `yaml:"-" json:"tx-result,omitempty"`
+	RelayResult map[string]interface{} `yaml:"-" json:"relay-result,omitempty"`
 }
 
 // ValidatePaths takes two chains and validates their paths
