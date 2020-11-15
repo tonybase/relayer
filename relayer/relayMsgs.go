@@ -186,6 +186,9 @@ func (r *RelayMsgs) SendWithController(src, dst *Chain, useController bool) {
 // Returns true upon success and false otherwise.
 func send(chain *Chain, msgs []sdk.Msg) bool {
 	res, err := chain.SendMsgs(msgs)
+	if err == nil {
+		chain.TxResult = append(chain.TxResult, res)
+	}
 	if err != nil || res.Code != 0 {
 		chain.LogFailedTx(res, err, msgs)
 		return false

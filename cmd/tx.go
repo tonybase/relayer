@@ -16,6 +16,7 @@ limitations under the License.
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
@@ -308,6 +309,13 @@ func relayMsgsCmd() *cobra.Command {
 			if err = strategy.RelayPackets(c[src], c[dst], sp, sh); err != nil {
 				return err
 			}
+
+			res := map[string]interface{}{
+				"src": c[src],
+				"dst": c[dst],
+			}
+			b, _ := json.Marshal(res)
+			cmd.OutOrStdout().Write(b)
 
 			return nil
 		},
